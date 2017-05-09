@@ -1,0 +1,5 @@
+package: github.com/toolhouse/verify-deployment-manifest
+import:
+- package: github.com/hashicorp/go-multierror
+- package: github.com/pkg/errors
+  version: ^0.8.0
