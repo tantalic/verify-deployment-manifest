@@ -21,8 +21,5 @@ docker-image: linux-amd64 ## Build a docker image
 docker-push: ## Push the docker image to DockerHub
 	docker push $(DOCKER_IMAGE):$(VERSION)
 
-update-ca: ## Download the latest CA roots
-	curl --time-cond ca-certificates.crt -o ca-certificates.crt https://curl.haxx.se/ca/cacert.pem
-
 help: ## Print available commands
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

@@ -1,8 +1,8 @@
-FROM scratch
+FROM alpine:3.5
 MAINTAINER Kevin Stock <kevin@toolhouse.com>
 
 # SSL CA Root Certs
-ADD ca-certificates.crt /etc/ssl/certs/
+RUN apk --no-cache add ca-certificates
 
 # Labels: http://label-schema.org
 ARG BUILD_DATE
