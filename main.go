@@ -68,7 +68,7 @@ func verify(url, commit, ref string) error {
 	}
 
 	if res.StatusCode < 200 || res.StatusCode > 299 {
-		return errors.Errorf("Recieved non-200 HTTP status code: %s", res.Status)
+		return errors.Errorf("Received non-200 HTTP status code: %s", res.Status)
 	}
 
 	defer res.Body.Close()
