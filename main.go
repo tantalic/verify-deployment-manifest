@@ -17,103 +17,31 @@ limitations under the License.
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"net/http"
 	"os"
-	"strings"
-
-	"github.com/hashicorp/go-multierror"
-	"github.com/pkg/errors"
 )
-
-// The following environment variables are required for this script
-const (
-	URL    = "URL"
-	COMMIT = "COMMIT"
-	REF    = "REF"
-)
-
-// DeploymentManifest defines the JSON schema for a deployment manifest file
-type DeploymentManifest struct {
-	Commit string `json:"commit"`
-	Ref    string `json:"ref"`
-}
 
 func main() {
 	c, err := configFromEnv()
 	if err != nil {
-		os.Stderr.WriteString("Configuration issue: ")
-		os.Stderr.WriteString(err.Error())
-		os.Stderr.WriteString("\n")
-		os.Exit(1)
+		exitWithError("Configuration issue", err)
 	}
 
-	err = verify(c.URL, c.Commit, c.Ref)
+	manifest, err := fetchManifest(c.URL)
 	if err != nil {
-		os.Stderr.WriteString("Issue verifying deployment: ")
-		os.Stderr.WriteString(err.Error())
-		os.Stderr.WriteString("\n")
-		os.Exit(1)
+		exitWithError("Error fetching deployment manifest", err)
+	}
+
+	err = manifest.verify(c.Commit, c.Ref)
+	if err != nil {
+		exitWithError("Issue verifying deployment", err)
 	}
 
 	fmt.Println("Deployment verified")
 	os.Exit(0)
 }
 
-func verify(url, commit, ref string) error {
-	res, err := http.Get(url)
-	if err != nil {
-		return errors.Wrap(err, "Error fetching deployment manifest JSON")
-	}
-
-	if res.StatusCode < 200 || res.StatusCode > 299 {
-		return errors.Errorf("Received non-200 HTTP status code: %s", res.Status)
-	}
-
-	defer res.Body.Close()
-	var body DeploymentManifest
-	json.NewDecoder(res.Body).Decode(&body)
-
-	var result *multierror.Error
-	if commit != "" && !strings.HasPrefix(body.Commit, commit) {
-		err := errors.Errorf("Commit %s does not match (expected value: %s)", body.Commit, commit)
-		result = multierror.Append(result, err)
-	}
-
-	if ref != "" && ref != body.Ref {
-		err := errors.Errorf("Ref %s does not match (expected value: %s)", body.Ref, ref)
-		result = multierror.Append(result, err)
-	}
-
-	return result.ErrorOrNil()
-}
-
-type config struct {
-	URL    string
-	Commit string
-	Ref    string
-}
-
-func configFromEnv() (config, error) {
-	var result *multierror.Error
-
-	URL, ok := os.LookupEnv(URL)
-	if !ok {
-		err := errors.Errorf("The environment variable %s must be set to the URL of the deployment manifest.", URL)
-		result = multierror.Append(result, err)
-	}
-
-	c := config{
-		URL:    URL,
-		Commit: os.Getenv(COMMIT),
-		Ref:    os.Getenv(REF),
-	}
-
-	if c.Commit == "" && c.Ref == "" {
-		err := errors.Errorf("The environment variables %s and %s are not set. At least one of these must be set.", COMMIT, REF)
-		result = multierror.Append(result, err)
-	}
-
-	return c, result.ErrorOrNil()
+func exitWithError(desc string, err error) {
+	fmt.Fprintf(os.Stderr, "%s: %s", desc, err.Error())
+	os.Exit(1)
 }
