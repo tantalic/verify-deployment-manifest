@@ -42,5 +42,5 @@ The application is primarily designed to be run inside a Docker container (altho
 For example, to check for a deployment for example.com which should be on tag `v1.3.1` and commit `b252eb498a0791db07496601ebc7a059dd55cfe9`
 
 ```shell
-docker run --env URL=https://www.example.com/deployment.json --env REF=v1.3.1 --env COMMIT=b252eb498a07 toolhouse/verify-deployment-manifest:v0.2.1
+docker run --env URL=https://www.example.com/deployment.json --env REF=v1.3.1 --env COMMIT=b252eb498a07 toolhouse/verify-deployment-manifest:latest
 ```
