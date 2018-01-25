@@ -1,6 +1,6 @@
 PKG := github.com/toolhouse/verify-deployment-manifest
 DOCKER_IMAGE := toolhouse/verify-deployment-manifest
-GOVERSION := 1.9.1
+GOVERSION := 1.9.2
 
 COMMIT := $(strip $(shell git rev-parse --short HEAD))
 VERSION := $(strip $(shell git describe --always --dirty))
