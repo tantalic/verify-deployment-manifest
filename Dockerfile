@@ -1,7 +1,7 @@
 FROM golang:1.9.3 as builder
 
 # Install dep to use for dependency management
-ENV DEP_VERSION 0.3.2
+ENV DEP_VERSION 0.4.1
 RUN curl -o /usr/local/bin/dep -L https://github.com/golang/dep/releases/download/v${DEP_VERSION}/dep-linux-amd64 && \
       chmod a+x /usr/local/bin/dep
 
