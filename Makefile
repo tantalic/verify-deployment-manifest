@@ -10,8 +10,9 @@ docker-image: ## Build a docker image
 		--build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
 		--build-arg VERSION=$(VERSION) \
 		--build-arg VCS_REF=$(COMMIT) \
-		-t $(DOCKER_IMAGE):$(VERSION) .
-
+		-t $(DOCKER_IMAGE):$(VERSION) \
+		-f ./cmd/verify-deployment-manifest/Dockerfile \
+		.
 docker-push: ## Push the docker image to DockerHub
 	docker push $(DOCKER_IMAGE):$(VERSION)
 

@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package main
+package deployment
 
 import (
 	"encoding/json"
@@ -25,13 +25,13 @@ import (
 	"github.com/pkg/errors"
 )
 
-// DeploymentManifest defines the JSON schema for a deployment manifest file
-type DeploymentManifest struct {
+// Manifest defines the JSON schema for a deployment manifest file
+type Manifest struct {
 	Commit string `json:"commit"`
 	Ref    string `json:"ref"`
 }
 
-func (m DeploymentManifest) verify(commit, ref string) error {
+func (m Manifest) Verify(commit, ref string) error {
 	var result *multierror.Error
 	if commit != "" && !strings.HasPrefix(m.Commit, commit) {
 		err := errors.Errorf("Commit %s does not match (expected value: %s)", m.Commit, commit)
@@ -46,8 +46,8 @@ func (m DeploymentManifest) verify(commit, ref string) error {
 	return result.ErrorOrNil()
 }
 
-func fetchManifest(url string) (DeploymentManifest, error) {
-	var manifest DeploymentManifest
+func FetchManifest(url string) (Manifest, error) {
+	var manifest Manifest
 
 	res, err := http.Get(url)
 	if err != nil {

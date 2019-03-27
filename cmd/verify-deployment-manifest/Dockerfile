@@ -5,22 +5,21 @@ ENV DEP_VERSION 0.4.1
 RUN curl -o /usr/local/bin/dep -L https://github.com/golang/dep/releases/download/v${DEP_VERSION}/dep-linux-amd64 && \
       chmod a+x /usr/local/bin/dep
 
-WORKDIR /go/src/github.com/toolhouse/verify-deployment-manifest
-
+WORKDIR /go/src/github.com/toolhouse/deployment-manifest
 # Install dependencies
 COPY Gopkg.* ./
 RUN dep ensure -vendor-only
 
 # Build go binary
-COPY *.go ./
-RUN CGO_ENABLED=0 GOOS=linux go build -a -tags netgo -ldflags '-w'
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -tags netgo -ldflags '-w'  -o verify-deployment-manifest ./cmd/verify-deployment-manifest/*.go
 
 
 FROM alpine:3.5
 
 # SSL CA Root Certs
 RUN apk --no-cache add ca-certificates
-COPY --from=builder /go/src/github.com/toolhouse/verify-deployment-manifest/verify-deployment-manifest /verify-deployment-manifest
+COPY --from=builder /go/src/github.com/toolhouse/deployment-manifest/verify-deployment-manifest /verify-deployment-manifest
 CMD ["/verify-deployment-manifest"]
 WORKDIR /
 

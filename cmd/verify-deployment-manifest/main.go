@@ -19,6 +19,8 @@ package main
 import (
 	"fmt"
 	"os"
+
+	"github.com/toolhouse/deployment-manifest/pkg/deployment"
 )
 
 func main() {
@@ -27,12 +29,12 @@ func main() {
 		exitWithError("Configuration issue", err)
 	}
 
-	manifest, err := fetchManifest(c.URL)
+	manifest, err := deployment.FetchManifest(c.URL)
 	if err != nil {
 		exitWithError("Error fetching deployment manifest", err)
 	}
 
-	err = manifest.verify(c.Commit, c.Ref)
+	err = manifest.Verify(c.Commit, c.Ref)
 	if err != nil {
 		exitWithError("Issue verifying deployment", err)
 	}
