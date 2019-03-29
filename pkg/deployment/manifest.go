@@ -59,6 +59,7 @@ func FetchManifest(url string) (Manifest, error) {
 		return manifest, err
 	}
 
+	req.Header.Add("Accept", "application/json")
 	res, err := client.Do(req)
 	if err != nil {
 		return manifest, err
