@@ -34,7 +34,7 @@ ARG VERSION
 LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.name="verify-deployment-manifest" \
       org.label-schema.description="A tool for verifying a deployment manifest JSON file from a server" \
-      org.label-schema.url="https://github.com/toolhouse/verify-deployment-manifest" \
+      org.label-schema.url="https://github.com/toolhouse/deployment-manifest/tree/master/cmd/verify-deployment-manifest" \
       org.label-schema.vcs-ref=$VCS_REF \
       org.label-schema.vcs-url="https://github.com/toolhouse/verify-deployment-manifest" \
       org.label-schema.version=$VERSION \

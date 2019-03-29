@@ -1,5 +1,7 @@
 # `verify-deployment-manifest`
 
+[![](https://images.microbadger.com/badges/image/toolhouse/verify-deployment-manifest.svg)](https://microbadger.com/images/toolhouse/verify-deployment-manifest "Docker Image") 
+
 A tool for verifying a site/application is running the desired version by
 checking the deployment manifest. 
 
