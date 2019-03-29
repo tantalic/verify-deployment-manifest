@@ -19,7 +19,7 @@ RUN go mod download
 COPY . .
 RUN go build -installsuffix 'static' ./cmd/verify-deployment-manifest/
 
-FROM alpine:3.5
+FROM alpine:3.9.2
 
 # SSL CA Root Certs
 RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
