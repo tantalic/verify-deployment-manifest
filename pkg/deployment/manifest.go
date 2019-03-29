@@ -20,6 +20,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"strings"
+	"time"
 
 	multierror "github.com/hashicorp/go-multierror"
 	"github.com/pkg/errors"
@@ -49,7 +50,16 @@ func (m Manifest) Verify(commit, ref string) error {
 func FetchManifest(url string) (Manifest, error) {
 	var manifest Manifest
 
-	res, err := http.Get(url)
+	client := &http.Client{
+		Timeout: 5 * time.Second,
+	}
+
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return manifest, err
+	}
+
+	res, err := client.Do(req)
 	if err != nil {
 		return manifest, err
 	}
