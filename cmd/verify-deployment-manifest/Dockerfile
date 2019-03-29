@@ -1,25 +1,29 @@
-FROM golang:1.9.4 as builder
+ARG GO_VERSION=1.12.1
 
-# Install dep to use for dependency management
-ENV DEP_VERSION 0.4.1
-RUN curl -o /usr/local/bin/dep -L https://github.com/golang/dep/releases/download/v${DEP_VERSION}/dep-linux-amd64 && \
-      chmod a+x /usr/local/bin/dep
+FROM golang:${GO_VERSION}-alpine as builder
 
-WORKDIR /go/src/github.com/toolhouse/deployment-manifest
+# Install git (required to fetch dependencies)
+RUN apk update && apk add git && rm -rf /var/cache/apk/*
+
+# Build Settings
+ENV CGO_ENABLED=0
+ENV GOOS=linux
+
+WORKDIR /src
+
 # Install dependencies
-COPY Gopkg.* ./
-RUN dep ensure -vendor-only
+COPY ./go.mod ./go.sum          ./
+RUN go mod download
 
 # Build go binary
 COPY . .
-RUN CGO_ENABLED=0 GOOS=linux go build -a -tags netgo -ldflags '-w'  -o verify-deployment-manifest ./cmd/verify-deployment-manifest/*.go
-
+RUN go build -installsuffix 'static' ./cmd/verify-deployment-manifest/
 
 FROM alpine:3.5
 
 # SSL CA Root Certs
-RUN apk --no-cache add ca-certificates
-COPY --from=builder /go/src/github.com/toolhouse/deployment-manifest/verify-deployment-manifest /verify-deployment-manifest
+RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
+COPY --from=builder /src/verify-deployment-manifest /verify-deployment-manifest
 CMD ["/verify-deployment-manifest"]
 WORKDIR /
 
