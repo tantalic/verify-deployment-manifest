@@ -8,6 +8,7 @@ replace (
 )
 
 require (
+	github.com/blang/semver v3.5.1+incompatible
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/hashicorp/errwrap v1.0.0
 	github.com/hashicorp/go-multierror v1.0.0

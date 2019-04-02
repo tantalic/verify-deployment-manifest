@@ -22,6 +22,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/blang/semver"
 	multierror "github.com/hashicorp/go-multierror"
 	"github.com/pkg/errors"
 )
@@ -45,6 +46,21 @@ func (m Manifest) Verify(commit, ref string) error {
 	}
 
 	return result.ErrorOrNil()
+}
+
+func (m Manifest) Version() string {
+	_, err := semver.Parse(m.Ref)
+	if err != nil {
+		c := []rune(m.Commit)
+
+		if len(c) > 8 {
+			c = c[0:8]
+		}
+
+		return string(c)
+	}
+
+	return m.Ref
 }
 
 func FetchManifest(url string) (Manifest, error) {
