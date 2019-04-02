@@ -32,7 +32,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	validResp(w, env, manifest.Ref)
+	validResp(w, env, manifest.Version())
 }
 
 func manifestURLFromReq(r *http.Request) (string, error) {
